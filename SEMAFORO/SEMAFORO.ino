@@ -21,10 +21,10 @@ void setup() {
 void loop() {
   digitalWrite(ledVermelho, LOW);
   digitalWrite(ledVerde, HIGH);
-  delay(4000);
-  digitalWrite(ledVerde, LOW);
+  delay(4000); 
   digitalWrite(ledAmarelo, HIGH);
   delay(2000);
+  digitalWrite(ledVerde, LOW);
   digitalWrite(ledAmarelo, LOW);
   digitalWrite(ledVermelho, HIGH);
   delay(4000);
