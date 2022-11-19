@@ -25,8 +25,8 @@ void setup() {
   pinMode(pinP, OUTPUT);
   pinMode(pinINT0, INPUT);
   pinMode(pinINT1, INPUT);
-  attachInterrupt(digitalPinToInterrupt(pinINT0), anterior, RISING);
-  attachInterrupt(digitalPinToInterrupt(pinINT1), proximo, RISING);
+  attachInterrupt(digitalPinToInterrupt(pinINT0), anterior, FALLING);
+  attachInterrupt(digitalPinToInterrupt(pinINT1), proximo, FALLING);
 
   // Configuração do timer1 
   TCCR1A = 0;                       //confira timer para operação normal pinos OC1A e OC1B desconectados
