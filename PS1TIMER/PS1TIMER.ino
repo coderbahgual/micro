@@ -11,8 +11,8 @@ int posicao = 0;
 int pinINT0 = 21; // atm2560 pin INT0
 int pinINT1 = 20; // atm2560 pin INT1
 
-//int hello_at328p[12] = { H,  E,  L,  L, O,  _,  A, T, 3, 2, 8,  P};
-  int hello_at328p[12] = {12, 11, 13, 13, 0, 16, 10, 7, 3, 2, 8, 14};
+//int hello_at328p[12] = { H,  E,  L, L., O,  _,  A, T, 3, 2, 8,  P};
+  int hello_at328p[12] = {12, 11, 13, 17, 0, 16, 10, 7, 3, 2, 8, 14};
 
 void setup() {
   pinMode(pinA, OUTPUT);
@@ -47,16 +47,19 @@ void loop() {
 
 ISR(TIMER1_OVF_vect) {
   // reset();
-  if (posicao > 12) posicao = 0;
-  posicao++; // ++posicao;
+  if (posicao == 11) {
+    posicao = 0;
+  } else {
+    posicao++; // ++posicao;
+  }
   // delay(2000);
 }
 
 void anterior() {
   if (posicao == 0) {
-    posicao = 12;
+    posicao = 11;
   } else {
-    posicao--;
+    posicao--; // --posicao;
   }
   digitalWrite(pinP, LOW);
   delay(5000);
@@ -64,10 +67,10 @@ void anterior() {
 }
 
 void proximo() {
-  if (posicao == 12) {
+  if (posicao == 11) {
     posicao = 0;
   } else {
-    posicao++;
+    posicao++; // ++posicao;
   }
   digitalWrite(pinP, LOW);
   delay(5000);
@@ -196,6 +199,12 @@ void numeros(int i) {
       break;
       case 16: // _
         digitalWrite(pinD, LOW);
+      break;
+      case 17: // L.
+        digitalWrite(pinF, LOW);
+        digitalWrite(pinE, LOW);
+        digitalWrite(pinD, LOW);
+        digitalWrite(pinP, LOW);
       break;
     }
 }
