@@ -1,206 +1,187 @@
-int pinA = 3;
-int pinB = 2;
-int pinC = 7;
-int pinD = 8;
-int pinE = 9;
-int pinF = 4;
-int pinG = 5;
-int pinP = 6;
+//int pinUnidade[8] = {B, A, F, G, P, C, D, E}; // DISPLAY UNIDADE
+  int pinUnidade[8] = {2, 3, 4, 5, 6, 7, 8, 9};
+//int pinDezena[8] = { B,  A,  F,  G,  P,  C,  D,  E}; // DISPLAY DEZENA
+  int pinDezena[8] = {22, 24, 26, 28, 30, 32, 34, 36};
 
-int posicao = 0;
-int pinINT0 = 21; // atm2560 pin INT0
-int pinINT1 = 20; // atm2560 pin INT1
-
-//int hello_at328p[12] = { H,  E,  L, L., O,  _,  A, T, 3, 2, 8,  P};
-  int hello_at328p[12] = {12, 11, 13, 17, 0, 16, 10, 7, 3, 2, 8, 14};
+int posicaoUni = 0;
+int posicaoDez = 0;
 
 void setup() {
-  pinMode(pinA, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  pinMode(pinC, OUTPUT);
-  pinMode(pinD, OUTPUT);
-  pinMode(pinE, OUTPUT);
-  pinMode(pinF, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinP, OUTPUT);
-  pinMode(pinINT0, INPUT);
-  pinMode(pinINT1, INPUT);
-  attachInterrupt(digitalPinToInterrupt(pinINT0), anterior, FALLING);
-  attachInterrupt(digitalPinToInterrupt(pinINT1), proximo, FALLING);
+  for (int i = 0; i < 8; i++) {
+    pinMode(pinUnidade[i], OUTPUT);
+    pinMode(pinDezena[i], OUTPUT);
+  }
 
-  // Configuração do timer1 
+  // Configuração do timer1
   TCCR1A = 0;                       //confira timer para operação normal pinos OC1A e OC1B desconectados
   TCCR1B = 0;                       //limpa registrador
   TCCR1B |= (1<<CS10)|(1 << CS12);  // configura prescaler para 1024: CS12 = 1 e CS10 = 1
   TCNT1 = 0xC2F7;                   // incia timer com valor para que estouro ocorra em 1 segundo
                                     // 65536-(16MHz/1024/1Hz) = 49911 = 0xC2F7
   TIMSK1 |= (1 << TOIE1);           // habilita a interrupção do TIMER1
+
+  // Configuração do timer2
+//  TCCR2A = 0; // timer operando em modo normal, registrador de controle do timer2 (8 bits em zero)
+//  TCCR2B = 7; //prescaler 1:1024, divisor permite contar tempos maiores com o timer (3 bits menos significativos) multiplica o ciclo de maquina por 1024
+//  TCNT2 = 0;  //registrador de contagem
+//  TIMSK2 = 1; //habilita interrupçao do timer2
+/*
+ overflow = timer2_cont * prescaler * ciclo de maquina
+ ciclo de maquina = 16mhz = 1/16000000 = 62,5ns
+ overflow = 256 * 1024 * 62,5E-9 =  16,38ms
+ A cada 16,5ms ocorre um interrupçao do timer2
+*/
 }
 
 void loop() {
-  numeros(hello_at328p[posicao]);
+  numeros(posicaoUni, pinUnidade);
+  numeros(posicaoDez, pinDezena);
 }
 
 ISR(TIMER1_OVF_vect) {
-  // reset();
   TCNT1 = 0xC2F7; // Renicia TIMER
-  if (posicao == 11) {
-    posicao = 0;
+  if (posicaoUni == 9 && posicaoDez == 9) {
+    posicaoUni = 0;
+    posicaoDez = 0;
+  } else if (posicaoUni != 9) {
+    posicaoUni++;
   } else {
-    posicao++; // ++posicao;
+    posicaoUni = 0;
+    posicaoDez++;
   }
 }
 
-void anterior() {
-  if (posicao == 0) {
-    posicao = 11;
-  } else {
-    posicao--; // --posicao;
+void reset(int *pin) {
+  for (int i = 0; i < 8; i++) {
+    digitalWrite(pin[i], HIGH);
   }
-  digitalWrite(pinP, LOW);
-  delay(5000);
-  digitalWrite(pinP, HIGH);
 }
 
-void proximo() {
-  if (posicao == 11) {
-    posicao = 0;
-  } else {
-    posicao++; // ++posicao;
-  }
-  digitalWrite(pinP, LOW);
-  delay(5000);
-  digitalWrite(pinP, HIGH);
-}
-
-void reset() {
-  digitalWrite(pinA, HIGH);
-  digitalWrite(pinB, HIGH);
-  digitalWrite(pinC, HIGH);
-  digitalWrite(pinD, HIGH);
-  digitalWrite(pinE, HIGH);
-  digitalWrite(pinF, HIGH);
-  digitalWrite(pinG, HIGH);
-  digitalWrite(pinP, HIGH);
-}
-
-void numeros(int i) {
-    reset();
+void numeros(int i, int *pin) {
+    reset(pin);
+    // {B, A, F, G, P, C, D, E};
+    // {0, 1, 2, 3, 4, 5, 6, 7};
     switch(i) {
       case 0: // zero e O
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinC, LOW);
-        digitalWrite(pinD, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinF, LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[5], LOW);
+        digitalWrite(pin[6], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[2], LOW);
       break;
       case 1:
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinC, LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[5], LOW);
       break;
       case 2:
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinG, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinD, LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[3], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[6], LOW);
       break;
       case 3:
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinG, LOW);
-        digitalWrite(pinC, LOW);
-        digitalWrite(pinD, LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[3], LOW);
+        digitalWrite(pin[5], LOW);
+        digitalWrite(pin[6], LOW);
       break;
       case 4:
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinG, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinC, LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[3], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[5], LOW);
       break;
       case 5:
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinG, LOW);
-        digitalWrite(pinC, LOW);
-        digitalWrite(pinD, LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[3], LOW);
+        digitalWrite(pin[5], LOW);
+        digitalWrite(pin[6], LOW);
       break;
       case 6:
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinD, LOW);
-        digitalWrite(pinC, LOW);
-        digitalWrite(pinG, LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[6], LOW);
+        digitalWrite(pin[5], LOW);
+        digitalWrite(pin[3], LOW);
       break;
       case 7: // sete e T
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinC, LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[5], LOW);
       break;
       case 8:
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinG, LOW);
-        digitalWrite(pinC, LOW);
-        digitalWrite(pinD, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinB, LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[3], LOW);
+        digitalWrite(pin[5], LOW);
+        digitalWrite(pin[6], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[0], LOW);
       break;
       case 9:
-        digitalWrite(pinG, LOW);
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinC, LOW);
+        digitalWrite(pin[3], LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[5], LOW);
       break;
       case 10: // A
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinC, LOW);
-        digitalWrite(pinG, LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[5], LOW);
+        digitalWrite(pin[3], LOW);
       break;
       case 11: // E
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinD, LOW);
-        digitalWrite(pinG, LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[6], LOW);
+        digitalWrite(pin[3], LOW);
       break;
       case 12: // H
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinC, LOW);
-        digitalWrite(pinG, LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[5], LOW);
+        digitalWrite(pin[3], LOW);
       break;
       case 13: // L
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinD, LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[6], LOW);
       break;
       case 14: // P
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinA, LOW);
-        digitalWrite(pinB, LOW);
-        digitalWrite(pinG, LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[1], LOW);
+        digitalWrite(pin[0], LOW);
+        digitalWrite(pin[3], LOW);
       break;
       case 15: // T2
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinA, LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[1], LOW);
       break;
       case 16: // _
-        digitalWrite(pinD, LOW);
+        digitalWrite(pin[6], LOW);
       break;
       case 17: // L.
-        digitalWrite(pinF, LOW);
-        digitalWrite(pinE, LOW);
-        digitalWrite(pinD, LOW);
-        digitalWrite(pinP, LOW);
+        digitalWrite(pin[2], LOW);
+        digitalWrite(pin[7], LOW);
+        digitalWrite(pin[6], LOW);
+        digitalWrite(pin[4], LOW);
+      break;
+      case 18: // -
+        digitalWrite(pin[3], LOW);
+      break;
+      case 19: // .
+        digitalWrite(pin[4], LOW);
       break;
     }
 }
