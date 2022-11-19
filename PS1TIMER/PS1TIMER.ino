@@ -29,16 +29,12 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(pinINT1), proximo, RISING);
 
   // Configuração do timer1 
-  TCCR1A = 0; //confira timer para operação normal pinos OC1A e OC1B desconectados
-  TCCR1B = 4; //limpa registrador
-  TIMSK1 |= (1 << TOIE1); // habilita a interrupção do TIMER1
-  //---------------SEM PRESCALER--------------------------------------
-   // TCCR1B = 1;  // modo normal sem prescaler
-   TCNT1 = 0; // 1s == 0xC2F7
-  //SEM PRESCALER
-  // 65536 ciclos * 6.25e-08 (periodo do ciclo em s) =  0.004096 s = 4.09ms tempo para interrupcao
-  // 10000 ms / 4.09 ms/interrupcao = +-245 
-  // 245 ciclos teremos 1S  
+  TCCR1A = 0;                       //confira timer para operação normal pinos OC1A e OC1B desconectados
+  TCCR1B = 0;                       //limpa registrador
+  TCCR1B |= (1<<CS10)|(1 << CS12);  // configura prescaler para 1024: CS12 = 1 e CS10 = 1
+  TCNT1 = 0xC2F7;                   // incia timer com valor para que estouro ocorra em 1 segundo
+                                    // 65536-(16MHz/1024/1Hz) = 49911 = 0xC2F7
+  TIMSK1 |= (1 << TOIE1);           // habilita a interrupção do TIMER1
 }
 
 void loop() {
@@ -47,12 +43,12 @@ void loop() {
 
 ISR(TIMER1_OVF_vect) {
   // reset();
+  TCNT1 = 0xC2F7; // Renicia TIMER
   if (posicao == 11) {
     posicao = 0;
   } else {
     posicao++; // ++posicao;
   }
-  // delay(2000);
 }
 
 void anterior() {
