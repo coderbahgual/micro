@@ -202,5 +202,11 @@ void numeros(int i) {
         digitalWrite(pinD, LOW);
         digitalWrite(pinP, LOW);
       break;
+	  case 18: // -
+        digitalWrite(pinG, LOW);
+      break;
+      case 19: // .
+        digitalWrite(pinP, LOW);
+      break;
     }
 }
