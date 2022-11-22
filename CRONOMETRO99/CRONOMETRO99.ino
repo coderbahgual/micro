@@ -22,15 +22,16 @@ void setup() {
 
   // Configuração do timer2
   TCCR2A = 0; // timer operando em modo normal, registrador de controle do timer2 (8 bits em zero)
-  TCCR2B = 7; //prescaler 1:1024, divisor permite contar tempos maiores com o timer (3 bits menos significativos) multiplica o ciclo de maquina por 1024
+  TCCR2B = 7; //prescaler 1:1024, divisor permite contar tempos maiores com o timer 
+              // (3 bits menos significativos) multiplica o ciclo de maquina por 1024
   TCNT2 = 0;  //registrador de contagem
   TIMSK2 = 1; //habilita interrupçao do timer2
-/*
- overflow = timer2_cont * prescaler * ciclo de maquina
- ciclo de maquina = 16mhz = 1/16000000 = 62,5ns
- overflow = 256 * 1024 * 62,5E-9 =  16,38ms
- A cada 16,5ms ocorre um interrupçao do timer2
-*/
+  /*
+   overflow = timer2_cont * prescaler * ciclo de maquina
+   ciclo de maquina = 16mhz = 1/16000000 = 62,5ns
+   overflow = 256 * 1024 * 62,5E-9 =  16,38ms
+   A cada 16,5ms ocorre um interrupçao do timer2
+  */
 }
 
 void loop() {
