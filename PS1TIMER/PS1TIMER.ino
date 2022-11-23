@@ -10,6 +10,8 @@ int pinP = 6;
 int posicao = 0;
 int pinINT0 = 21; // atm2560 pin INT0
 int pinINT1 = 20; // atm2560 pin INT1
+int pinChange = 10; // pinChange pin 10
+bool pin10 = false;
 
 //int hello_at328p[12] = { H,  E,  L, L., O,  _,  A, T, 3, 2, 8,  P};
   int hello_at328p[12] = {12, 11, 13, 17, 0, 16, 10, 7, 3, 2, 8, 14};
@@ -35,6 +37,12 @@ void setup() {
   TCNT1 = 0xC2F7;                   // incia timer com valor para que estouro ocorra em 1 segundo
                                     // 65536-(16MHz/1024/1Hz) = 49911 = 0xC2F7
   TIMSK1 |= (1 << TOIE1);           // habilita a interrupção do TIMER1
+
+  // Configuração do pinchange
+  pinMode(pinChange, INPUT_PULLUP);
+  PCICR |= B00000001; // ativando interrupcoes nas posrtas PB
+  PCMSK0 |= B00000100; // ativando interrupcao no pino D10
+  
 }
 
 void loop() {
@@ -48,6 +56,13 @@ ISR(TIMER1_OVF_vect) {
     posicao = 0;
   } else {
     posicao++; // ++posicao;
+  }
+}
+
+ISR(PCINT0_vect) { // interrupcao por pinchange
+  if (digitalRead(pinChange) != pin10) { // se pin10 mudou de estado
+    pin10 = !pin10;
+    posicao = 0; // se mudou o estado a posicao recebe a primeira
   }
 }
 
