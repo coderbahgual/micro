@@ -40,8 +40,8 @@ void setup() {
 
   // Configuração do pinchange
   pinMode(pinChange, INPUT_PULLUP);
-  PCICR |= B00000001; // ativando interrupcoes nas posrtas PB
-  PCMSK0 |= B00000100; // ativando interrupcao no pino D10
+  PCICR |= B00000001; // ativando interrupcoes nas portas PB
+  PCMSK0 |= B00010000; // ativando interrupcao no pino 10
   
 }
 
@@ -63,6 +63,9 @@ ISR(PCINT0_vect) { // interrupcao por pinchange
   if (digitalRead(pinChange) != pin10) { // se pin10 mudou de estado
     pin10 = !pin10;
     posicao = 0; // se mudou o estado a posicao recebe a primeira
+    digitalWrite(pinP, LOW);
+    delay(5000);
+    digitalWrite(pinP, HIGH);
   }
 }
 
