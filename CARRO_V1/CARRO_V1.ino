@@ -1,19 +1,10 @@
-/* Carro Arduino com controle Bluetooth
- *    Código retirado do link abaixo:
- * http://www.instructables.com/id/Arduino-Bluetooth-RC-Car-Android-Controlled/?ALLSTEPS
- *    Conclusão e adaptações por Usinainfo:
- * http://www.usinainfo.com.br/
- */
-
 // Define os pinos de utilização do Driver L298.
-const int motorA1  = 11;    // Pin  5 of L293.
-const int motorA2  = 10;    // Pin  6 of L293.
-const int motorB1  = 9;   // Pin 10 of L293.
-const int motorB2  = 8;   // Pin 9 of L293.
+const int motorLF  = 11;    // Pin  5 of L293.
+const int motorLB  = 10;    // Pin  6 of L293.
+const int motorDB  = 9;   // Pin 10 of L293.
+const int motorDF  = 8;   // Pin 9 of L293.
 
 const int buzzer = 12;   // Define o Pino 13 como pino do Buzzer.
-
-// const int BTState = 2;    // Define o Pino 2 como o pino de comunicação do Bluetooth.
 
 // Variáveis Úteis
 int i = 0;
@@ -22,17 +13,20 @@ int state_rec;
 int vSpeed = 200;   // Define velocidade padrão 0 < x < 255.
 char state;
 
+
+
 void setup() {
   // Inicializa as portas como entrada e saída.
-  pinMode(motorA1, OUTPUT);
-  pinMode(motorA2, OUTPUT);
-  pinMode(motorB1, OUTPUT);
-  pinMode(motorB2, OUTPUT);
+  pinMode(motorLF, OUTPUT);
+  pinMode(motorLB, OUTPUT);
+  pinMode(motorDB, OUTPUT);
+  pinMode(motorDF, OUTPUT);
   pinMode(buzzer, OUTPUT);
 //  pinMode(BTState, INPUT);
 
   // Inicializa a comunicação serial em 9600 bits.
   Serial.begin(9600);
+  Serial.println("Motor test!");
 }
 
 void loop() {
@@ -77,64 +71,64 @@ void loop() {
 
   // Se o estado recebido for igual a 'F', o carro se movimenta para frente.
   if (state == 'F') {
-    analogWrite(motorB1, vSpeed);
-    analogWrite(motorA1, vSpeed);
-    analogWrite(motorA2, 0);
-    analogWrite(motorB2, 0);
+    analogWrite(motorDB, 0);
+    analogWrite(motorLF, vSpeed);
+    analogWrite(motorLB, 0);
+    analogWrite(motorDF, vSpeed);
   }
 
     else if (state == 'I') {  // Se o estado recebido for igual a 'I', o carro se movimenta para Frente Esquerda.
-    analogWrite(motorA1, vSpeed); 
-    analogWrite(motorA2, 0);
-    analogWrite(motorB1, 100);    
-    analogWrite(motorB2, 0);
+    analogWrite(motorLF, vSpeed); 
+    analogWrite(motorLB, 0);
+    analogWrite(motorDB, 100);    
+    analogWrite(motorDF, 0);
   }
 
     else if (state == 'G') {   // Se o estado recebido for igual a 'G', o carro se movimenta para Frente Direita.
-    analogWrite(motorA1, 100); 
-    analogWrite(motorA2, 0);
-    analogWrite(motorB1, vSpeed);      
-    analogWrite(motorB2, 0);
+    analogWrite(motorLF, 100); 
+    analogWrite(motorLB, 0);
+    analogWrite(motorDB, vSpeed);      
+    analogWrite(motorDF, 0);
   }
 
   else if (state == 'B') { // Se o estado recebido for igual a 'B', o carro se movimenta para trás.
-    analogWrite(motorA1, 0);
-    analogWrite(motorB1, 0);
-    analogWrite(motorB2, vSpeed);
-    analogWrite(motorA2, vSpeed);
+    analogWrite(motorLF, 0);
+    analogWrite(motorDB, 0);
+    analogWrite(motorDF, vSpeed);
+    analogWrite(motorLB, vSpeed);
   }
 
    else if (state == 'H') {  // Se o estado recebido for igual a 'H', o carro se movimenta para Trás Esquerda.
-    analogWrite(motorA1, 0);   
-    analogWrite(motorA2, vSpeed);
-    analogWrite(motorB1, 0); 
-    analogWrite(motorB2, 100);
+    analogWrite(motorLF, 0);   
+    analogWrite(motorLB, vSpeed);
+    analogWrite(motorDB, 0); 
+    analogWrite(motorDF, 100);
   }
   
   else if (state == 'J') {  // Se o estado recebido for igual a 'J', o carro se movimenta para Trás Direita.
-    analogWrite(motorA1, 0);   
-    analogWrite(motorA2, 100);
-    analogWrite(motorB1, 0);   
-    analogWrite(motorB2, vSpeed);
+    analogWrite(motorLF, 0);   
+    analogWrite(motorLB, 100);
+    analogWrite(motorDB, 0);   
+    analogWrite(motorDF, vSpeed);
   }
 
   else if (state == 'L') {   // Se o estado recebido for igual a 'L', o carro se movimenta para esquerda.
-    analogWrite(motorA1, 0);
-    analogWrite(motorA2, vSpeed);
-    analogWrite(motorB1, vSpeed);
-    analogWrite(motorB2, 0);
+    analogWrite(motorLF, 0);
+    analogWrite(motorLB, vSpeed);
+    analogWrite(motorDB, vSpeed);
+    analogWrite(motorDF, 0);
   }
   else if (state == 'R') {   // Se o estado recebido for igual a 'R', o carro se movimenta para direita.
-    analogWrite(motorA1, vSpeed);
-    analogWrite(motorA2, 0);
-    analogWrite(motorB1, 0);
-    analogWrite(motorB2, vSpeed);
+    analogWrite(motorLF, vSpeed);
+    analogWrite(motorLB, 0);
+    analogWrite(motorDB, 0);
+    analogWrite(motorDF, vSpeed);
   }
   else if (state == 'S') {   // Se o estado recebido for igual a 'S', o carro permanece parado.
-    analogWrite(motorA1, 0);
-    analogWrite(motorA2, 0);
-    analogWrite(motorB1, 0);
-    analogWrite(motorB2, 0);
+    analogWrite(motorLF, 0);
+    analogWrite(motorLB, 0);
+    analogWrite(motorDB, 0);
+    analogWrite(motorDF, 0);
   }
 
 
