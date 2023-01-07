@@ -20,7 +20,7 @@ const int motorDF = 8;  // motor direito gira pra tras
 float distancia = 0;
 int speedSet = 0;
 
-#define turn_amount 500
+#define turn_amount 300
 
 void setup() {
   // Inicializa as portas como entrada e saída.
@@ -36,20 +36,21 @@ void setup() {
 }
 
 void loop() {
+  digitalWrite(buzzer, LOW);
   float distanciaAux;
   long microsec = ultrasonic.timing();
   distancia = ultrasonic.convert(microsec, Ultrasonic::CM); // info sensor em centimetros
   delay(40);
   Serial.print("Distancia atual: ");
   Serial.println(distancia);
-  moveForward();
-  if (distancia <= 0.0) {
+  
+  if (distancia <= 15.0) {
     // tone(buzzer, 440, 1000);
-    digitalWrite(buzzer, LOW);
-    delay(1000);
     digitalWrite(buzzer, HIGH);
+    delay(1000);
+    digitalWrite(buzzer, LOW);
     
-    Serial.println("Object Detected");
+    Serial.println("Caminho bloqueado");
     moveStop();
     delay(100);
     moveBackward();
@@ -74,7 +75,7 @@ void loop() {
   }
 }
 
-void motores(int vMLF, int vMDF, int vMLB, int vMDB) {
+void motores(int vMLF, int vMLB, int vMDF, int vMDB) {
   analogWrite(motorLF, vMLF);
   analogWrite(motorLB, vMLB);
   analogWrite(motorDF, vMDF);
@@ -108,15 +109,13 @@ void moveBackward() {
 }  
 
 void turnRight() {
-  Serial.println("Turning Right");
+  Serial.println("Dobrando à Direita");
   motores(MAX_SPEED, 0, 0, MAX_SPEED);
   delay(turn_amount);
-  motores(MAX_SPEED, 0, MAX_SPEED, 0);
 } 
  
 void turnLeft() {
-  Serial.println("Turning Left");
+  Serial.println("Dobrando à Esquerda");
   motores(0, MAX_SPEED, MAX_SPEED, 0);
   delay(turn_amount);
-  motores(MAX_SPEED, 0, MAX_SPEED, 0);
 }  
