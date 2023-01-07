@@ -15,10 +15,11 @@ const int motorDB = 9;  // motor direito gira pra frente
 const int motorDF = 8;  // motor direito gira pra tras
 
 #define MAX_SPEED 200
-#define MAX_SPEED_OFFSET 20
+#define MAX_SPEED_OFFSET 50
 
 float distancia = 0;
 int speedSet = 0;
+int speedUp = 50;
 
 #define turn_amount 300
 
@@ -36,22 +37,21 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(buzzer, LOW);
+  digitalWrite(buzzer, HIGH);
   float distanciaAux;
   long microsec = ultrasonic.timing();
   distancia = ultrasonic.convert(microsec, Ultrasonic::CM); // info sensor em centimetros
-  delay(40);
+  delay(200);
   Serial.print("Distancia atual: ");
   Serial.println(distancia);
   
   if (distancia <= 15.0) {
+    Serial.println("Caminho bloqueado");
+    moveStop();
     // tone(buzzer, 440, 1000);
     digitalWrite(buzzer, HIGH);
     delay(1000);
     digitalWrite(buzzer, LOW);
-    
-    Serial.println("Caminho bloqueado");
-    moveStop();
     delay(100);
     moveBackward();
     delay(300);
@@ -72,6 +72,7 @@ void loop() {
     }
   } else {
     moveForward();
+    delay(300);
   }
 }
 
@@ -87,23 +88,25 @@ void moveStop() {
 }
   
 void moveForward() {
+  Serial.println("A frente e avante");
   // motores(MAX_SPEED, 0, MAX_SPEED, 0);
-  for (speedSet = 0; speedSet < MAX_SPEED; speedSet +=2) 
+  for (speedSet = 0; speedSet < MAX_SPEED; speedSet += speedUp) 
   // slowly bring the speed up to avoid loading down the batteries too quickly
   {
-    motores(speedSet, 0, speedSet, 0);
-    // motores(speedSet, 0, speedSet+MAX_SPEED_OFFSET, 0);
+    // motores(speedSet, 0, speedSet, 0);
+    motores(speedSet+MAX_SPEED_OFFSET, 0, speedSet, 0); // equilibrar
     delay(5);
   }
 }
 
 void moveBackward() {
+  Serial.println("Dando ré");
   // motores(0, MAX_SPEED, 0, MAX_SPEED);
-  for (speedSet = 0; speedSet < MAX_SPEED; speedSet +=2) 
+  for (speedSet = 0; speedSet < MAX_SPEED; speedSet += speedUp) 
   // slowly bring the speed up to avoid loading down the batteries too quickly
   {
-    motores(0, speedSet, 0, speedSet);
-    // motores(0, speedSet, 0, speedSet+MAX_SPEED_OFFSET);
+    // motores(0, speedSet, 0, speedSet);
+    motores(0, speedSet+MAX_SPEED_OFFSET, 0, speedSet); // equilibrar 
     delay(5);
   }
 }  
