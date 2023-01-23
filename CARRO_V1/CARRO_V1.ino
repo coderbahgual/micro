@@ -15,7 +15,7 @@ const int motorDB = 9;  // motor direito gira pra frente
 const int motorDF = 8;  // motor direito gira pra tras
 
 #define MAX_SPEED 200
-#define MAX_SPEED_OFFSET 50
+#define MAX_SPEED_OFFSET 0
 
 float distancia = 0;
 int speedSet = 0;
