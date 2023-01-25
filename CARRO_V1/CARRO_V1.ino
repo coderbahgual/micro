@@ -6,7 +6,7 @@
 //Inicializa o sensor nos pinos definidos acima
 Ultrasonic ultrasonic(pinoTrigger, pinoEcho);
 
-const int buzzer = 12; // Define o Pino 13 como pino do Buzzer.
+const int buzzer = 12; // Define o Pino 12 como pino do Buzzer.
 
 // Define os pinos de utilização do Driver L298.
 const int motorLF = 11; // motor esquerdo gira pra frente
