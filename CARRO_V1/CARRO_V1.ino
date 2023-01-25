@@ -15,13 +15,14 @@ const int motorDB = 9;  // motor direito gira pra frente
 const int motorDF = 8;  // motor direito gira pra tras
 
 #define MAX_SPEED 200
-#define MAX_SPEED_OFFSET 0
+#define MAX_SPEED_OFFSET_L 0
+#define MAX_SPEED_OFFSET_D 0
 
 float distancia = 0;
 int speedSet = 0;
-int speedUp = 50;
+int speedUp = 50; // valor de aceleracao da valocidade
 
-#define turn_amount 300
+#define turn_amount 300 // tempo que leva para fazer um movimento
 
 void setup() {
   // Inicializa as portas como entrada e saída.
@@ -33,7 +34,7 @@ void setup() {
 
   // Inicializa a comunicação serial em 9600 bits.
   Serial.begin(9600);
-  Serial.println("Motor test!");
+  Serial.println("Motor ligar!");
 }
 
 void loop() {
@@ -63,6 +64,7 @@ void loop() {
     delay(200);
 
     if(distanciaAux >= distancia) {
+    // if(distanciaAux >= distancia && distanciaAux >= 50.0) {
       turnRight();
       moveStop();
     } else {
@@ -72,9 +74,9 @@ void loop() {
     }
   } else {
     moveForward();
-    delay(300);
+    // delay(300);
   }
-}
+} // fim loop
 
 void motores(int vMLF, int vMLB, int vMDF, int vMDB) {
   analogWrite(motorLF, vMLF);
@@ -94,7 +96,7 @@ void moveForward() {
   // slowly bring the speed up to avoid loading down the batteries too quickly
   {
     // motores(speedSet, 0, speedSet, 0);
-    motores(speedSet+MAX_SPEED_OFFSET, 0, speedSet, 0); // equilibrar
+    motores(speedSet+MAX_SPEED_OFFSET_L, 0, speedSet+MAX_SPEED_OFFSET_D, 0); // equilibrar
     delay(5);
   }
 }
@@ -106,7 +108,7 @@ void moveBackward() {
   // slowly bring the speed up to avoid loading down the batteries too quickly
   {
     // motores(0, speedSet, 0, speedSet);
-    motores(0, speedSet+MAX_SPEED_OFFSET, 0, speedSet); // equilibrar 
+    motores(0, speedSet+MAX_SPEED_OFFSET_L, 0, speedSet+MAX_SPEED_OFFSET_D); // equilibrar
     delay(5);
   }
 }  
