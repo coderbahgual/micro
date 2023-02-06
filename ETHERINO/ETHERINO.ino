@@ -89,30 +89,23 @@ void setup() {
 
 void loop() {
 
-// ------ BEGIN SHIELD ETHERNET ------
     EthernetClient client = server.available(); // tenta conectar com cliente
     notaDisponivel(client);
-// ------ END SHIELD ETHERNET ------
 
-// ------ BEGIN LCD KEYPAD SHIELD ------
     int valBotoes = analogRead(pinBotoesLCD);
     botaoClick(valBotoes);
 
     lcd.setCursor(1,0);
     lcd.print("NOTAS POR TOM");
-// ------ END LCD KEYPAD SHIELD ------
 
-// ------ BEGIN MIC ------
     nota = Tone_det();
-    notaABC = intToNotaAbcjs(nota);
-    notaLCD = intToNotaLCD(nota);
-    lcd.setCursor(7,1);
-    lcd.print(notaLCD);
-// ------ END MIC ------
-
-  if (notaABC != "" && notaLCD != "") {
-    Serial.println(notaABC);
-  }
+    if (nota != -1) {
+      notaABC = intToNotaAbcjs(nota);
+      notaLCD = intToNotaLCD(nota);
+      lcd.setCursor(7,1);
+      lcd.print(notaLCD);
+      Serial.println(notaABC);
+    }
 
 } // fim do loop
 
@@ -179,42 +172,42 @@ void estadoBotao(int botao) {
     //Quando o botao for apertado ou solto
     if ((millis() - delayBotao) > tempoDebounce) {
         if ((botao != btnNENHUM) && (estadoBotaoAnt == btnNENHUM) ) {
-            botaoApertado(botao); 
+            // botaoApertado(botao); 
             delayBotao = millis();
         }
         if ((botao == btnNENHUM) && (estadoBotaoAnt != btnNENHUM) ) {
-            botaoSolto(estadoBotaoAnt); 
+            // botaoSolto(estadoBotaoAnt); 
             delayBotao = millis();
         }
     }
     estadoBotaoAnt = botao;
 }
 
-void botaoApertado(int botao) {
-    // Quando um botão for apertado
+// void botaoApertado(int botao) {
+//     // Quando um botão for apertado
 
-    // Para o exemplo de uso
-    contador++;
-    lcd.clear();
-    lcd.print(descBotao[botao]);
-    lcd.setCursor(14,0);
-    lcd.print(contador);
-    lcd.setCursor(0,1);
-    lcd.print("apertado");
-}
+//     // Para o exemplo de uso
+//     contador++;
+//     lcd.clear();
+//     lcd.print(descBotao[botao]);
+//     lcd.setCursor(14,0);
+//     lcd.print(contador);
+//     lcd.setCursor(0,1);
+//     lcd.print("apertado");
+// }
 
-void botaoSolto(int botao) {
-    //Quando um botão for solto
+// void botaoSolto(int botao) {
+//     //Quando um botão for solto
 
 
-    // Para o exemplo de uso
-    lcd.clear();
-    lcd.print(descBotao[botao]);
-    lcd.setCursor(14,0);
-    lcd.print(contador);
-    lcd.setCursor(0,1);
-    lcd.print("solto");
-}
+//     // Para o exemplo de uso
+//     lcd.clear();
+//     lcd.print(descBotao[botao]);
+//     lcd.setCursor(14,0);
+//     lcd.print(contador);
+//     lcd.setCursor(0,1);
+//     lcd.print("solto");
+// }
 
 int Tone_det() {
   long unsigned int a1,b,a2;
