@@ -97,13 +97,22 @@ void loop() {
 // ------ BEGIN LCD KEYPAD SHIELD ------
     int valBotoes = analogRead(pinBotoesLCD);
     botaoClick(valBotoes);
+
+    lcd.setCursor(1,0);
+    lcd.print("NOTAS POR TOM");
 // ------ END LCD KEYPAD SHIELD ------
 
 // ------ BEGIN MIC ------
     nota = Tone_det();
     notaABC = intToNotaAbcjs(nota);
     notaLCD = intToNotaLCD(nota);
+    lcd.setCursor(7,1);
+    lcd.print(notaLCD);
 // ------ END MIC ------
+
+  if (notaABC != "" && notaLCD != "") {
+    Serial.println(notaABC);
+  }
 
 } // fim do loop
 
@@ -224,9 +233,9 @@ int Tone_det() {
   }
   b=micros();
 
-  sum1=sum1/128;               //   Average amplitude
-  sum2=sqrt(sum2/128);         // RMS
-  sampling= 128000000/(b-a1);   // real time sampling frequency
+  sum1=sum1/128;              // Average amplitude
+  sum2=sqrt(sum2/128);        // RMS
+  sampling= 128000000/(b-a1); // real time sampling frequency
 
   //for very low or no amplitude, this code wont start
   //it takes very small aplitude of sound to initiate for value sum2-sum1>3,   
@@ -236,7 +245,7 @@ int Tone_det() {
     //EasyFFT based optimised  FFT code,   
     //this code updates f_peaks array with 5 most dominent frequency in descending   order
   
-    for(int i=0;i<12;i++){in[i]=0;}  // utilising in[] array for further   calculation
+    for(int i=0;i<12;i++){in[i]=0;} // utilising in[] array for further   calculation
 
     int j=0,k=0; //below loop will convert frequency value to note   
     for(int i=0;i<5;i++){
@@ -396,18 +405,18 @@ String intToNotaAbcjs(int n) {
 String intToNotaLCD(int n) {
     String notaRetorno = "";
     switch(n) {
-        case  0: notaRetorno = "C";  break;
+        case  0: notaRetorno = "C "; break;
         case  1: notaRetorno = "C#"; break;
-        case  2: notaRetorno = "D";  break;
+        case  2: notaRetorno = "D "; break;
         case  3: notaRetorno = "D#"; break;
-        case  4: notaRetorno = "E";  break;
-        case  5: notaRetorno = "F";  break;
+        case  4: notaRetorno = "E "; break;
+        case  5: notaRetorno = "F "; break;
         case  6: notaRetorno = "F#"; break;
-        case  7: notaRetorno = "G";  break;
+        case  7: notaRetorno = "G "; break;
         case  8: notaRetorno = "G#"; break;
-        case  9: notaRetorno = "A";  break;
+        case  9: notaRetorno = "A "; break;
         case 10: notaRetorno = "A#"; break;
-        case 11: notaRetorno = "B";  break;
+        case 11: notaRetorno = "B "; break;
     }
     return notaRetorno;
 }
