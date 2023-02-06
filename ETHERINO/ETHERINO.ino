@@ -9,8 +9,8 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress ip(192, 168, 0, 177);     // endereco ip estatico para o shield
 IPAddress gateway(192, 168, 0, 1);  // cabeca da rede
 IPAddress subnet(255, 255, 255, 0); // mascara da rede
-IPAddress myDns(8, 8, 8, 8);        // dns padrao google
-EthernetServer server(80);          // cria um servidor WEB
+IPAddress myDns(8, 8, 8, 8);        // dns padrao
+EthernetServer server(80);          // porta servidor WEB
 // ------ END SHIELD ETHERNET ------
 
 // ------ BEGIN LCD KEYPAD SHIELD ------
@@ -37,14 +37,10 @@ LiquidCrystal lcd(pinRs, pinEn, pinD4, pinD5, pinD6, pinD7);
 unsigned long delayBotao;
 int estadoBotaoAnt = btnNENHUM;
 
-void estadoBotao(int botao);
-void botaoApertado(int botao);
-void botaoSolto(int botao);
-// ------ END LCD KEYPAD SHIELD ------
-
 //Para o exemplo de uso
 String descBotao[6] = {"", "SELECT", "LEFT", "DOWN", "UP", "RIGHT"};
 int contador = 0;
+// ------ END LCD KEYPAD SHIELD ------
 
 // ------ BEGIN MIC ------
 int in[128];
